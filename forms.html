@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Liste de Sélection avec Bootstrap</title>
-    <link rel="stylesheet" href="/Users/valentin/Library/CloudStorage/OneDrive-OGECEnsembleScolaireNiortais/API/css/bootstrap.min.css">
+    <title>Liste de Sélection avec Bootstrap et Météo</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 </head>
 <body>
 
@@ -23,6 +24,7 @@
                 <div class="card-body">
                     <h4 class="card-title">Coordonnées</h4>
                     <p class="card-text" id="coordinates"></p>
+                    <div id="map" style="height: 300px;"></div> <!-- Ajoutez une hauteur pour la carte -->
                 </div>
             </div>
         </div>
@@ -32,7 +34,8 @@
                     <h4 class="card-title">Météo</h4>
                     <p class="card-text" id="weatherDescription"></p>
                     <p class="card-text" id="weatherTemperature"></p>
-                    <p class="card-text" id="weatherwindSpeed"></p>
+                    <p class="card-text" id="weatherWindSpeed"></p>
+                    <img id="imageIcon" src="">
                 </div>
             </div>
         </div>
@@ -40,10 +43,13 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="/Users/valentin/Library/CloudStorage/OneDrive-OGECEnsembleScolaireNiortais/API/js/bootstrap.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
 <script>
-    $('#envoyerButton').on('click', function() { // Gestionnaire pour le bouton "Envoyer"
+    var map; // Déclarez la variable de la carte en dehors de la fonction
+
+    $('#envoyerButton').on('click', function() {
         var selectedVille = $('#villeInput').val();
         var apiUrl = 'https://api-adresse.data.gouv.fr/search/?q=' + selectedVille;
 
@@ -54,22 +60,35 @@
                 var latitude = data.features[0].geometry.coordinates[1];
                 var longitude = data.features[0].geometry.coordinates[0];
                 $('#coordinates').text('Latitude : ' + latitude + ', Longitude : ' + longitude);
+
+                // Créez une carte Leaflet et définissez la vue initiale
+                if (map) {
+                    map.remove(); // Supprimez la carte précédente
+                }
+                map = L.map('map').setView([latitude, longitude], 12);
+
+                // Ajoutez des tuiles de fond (par exemple, OpenStreetMap)
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                }).addTo(map);
                 
                 var weatherApiUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&appid=44db16db91ed95ba40b859d2a01c1d96';
                 
                 $.ajax({
                     url: weatherApiUrl,
-                    method: 'POST',
+                    method: 'GET',
                     success: function(weatherData) {
-                        var temperature = (weatherData.main.temp - 273.15).toFixed(1); // Convertir la température en Celsius
+                        var temperature = (weatherData.main.temp - 273.15).toFixed(1);
                         var description = weatherData.weather[0].description;
                         var windSpeed = weatherData.wind.speed;
+                        var icon = weatherData.weather[0].icon;
+                        var weatherIconUrl = 'https://openweathermap.org/img/wn/' + icon + '.png';
 
                         $('#weatherDescription').text('Description : ' + description);
-                        $('#weatherTemperature').text('Température : ' + temperature +'C°');
-                        $('#weatherwindSpeed').text('Vent : ' + windSpeed + 'm/s');
-
-
+                        $('#weatherTemperature').text('Température : ' + temperature + ' C°');
+                        $('#weatherWindSpeed').text('Vent : ' + (windSpeed*3.6).toFixed(1) + ' km/h');
+                        
+                        $('#imageIcon').attr('src', weatherIconUrl);
                     },
                     error: function(error) {
                         console.error('Erreur lors de la requête météo :', error);
