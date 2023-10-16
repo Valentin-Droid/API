@@ -1,0 +1,36 @@
+/* Styles pour l'animation de chargement */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 9999;
+    display: none;
+}
+
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Style pour les cartes */
+.card-height {
+    height: 100%;
+}
+
+/* Style pour la carte */
+.map-card {
+    height: 300px;
+    background-image: url('your-background-image.jpg');
+    background-size: cover;
+}
+
+/* Style pour ajuster la taille de l'icône météo */
+.weather-icon {
+    max-width: 100%;
+    height: auto;
+}
