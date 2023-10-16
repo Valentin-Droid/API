@@ -1,90 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulaire Bootstrap</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Liste de Sélection avec Bootstrap</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>Formulaire Bootstrap</h2>
-        <form>
-            <div class="form-group">
-                <label for="nom">Nom :</label>
-                <input type="text" class="form-control" id="nom" placeholder="Entrez votre nom">
-            </div>
-            <div class="form-group">
-                <label for="prenom">Prénom :</label>
-                <input type="text" class="form-control" id="prenom" placeholder="Entrez votre prénom">
-            </div>
-            <div class="form-group">
-                <label for="email">Adresse e-mail :</label>
-                <input type="email" class="form-control" id="email" placeholder="Entrez votre adresse e-mail">
-            </div>
-            <div class="form-group">
-                <label for="message">Message :</label>
-                <textarea class="form-control" id="message" rows="4" placeholder="Entrez votre message"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary" id="envoyer">Envoyer</button>
-        </form>
-    </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <label for="villeSelect">Sélectionnez une ville :</label>
+            <select class="form-control" id="villeSelect">
+                <option value="paris">Paris</option>
+                <option value="lyon">Lyon</option>
+                <option value="marseille">Marseille</option>
+                <option value="montpellier">Montpellier</option>
+            </select>
+            <button class="btn btn-primary mt-2" id="envoyerButton">Envoyer</button> <!-- Bouton "Envoyer" -->
+        </div>
+    </div>
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Sélectionnez le formulaire et le bouton "Envoyer" par leurs ID
-            const form = document.querySelector('form');
-            const submitButton = document.getElementById('envoyer');
-        
-            // Ajoutez un gestionnaire d'événements pour la soumission du formulaire
-            form.addEventListener('submit', function (event) {
-                event.preventDefault(); // Empêche la soumission du formulaire par défaut
-        
-                // Récupérez les valeurs du formulaire
-                const nom = document.getElementById('nom').value;
-                const prenom = document.getElementById('prenom').value;
-                const email = document.getElementById('email').value;
-                const message = document.getElementById('message').value;
-        
-                // Créez un objet JavaScript contenant les données à envoyer
-                const dataToSend = {
-                    nom,
-                    prenom,
-                    email,
-                    message
-                };
-        
-                // Convertissez l'objet en une chaîne JSON
-                const jsonData = JSON.stringify(dataToSend);
-        
-                // Définissez les options de la requête POST
-                const requestOptions = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h4>Coordonnées :</h4>
+            <p id="coordinates"></p>
+            <h4>Météo :</h4>
+            <p id="weather"></p>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script>
+    $('#envoyerButton').on('click', function() { // Gestionnaire pour le bouton "Envoyer"
+        var selectedVille = $('#villeSelect').val();
+        var apiUrl = 'https://api-adresse.data.gouv.fr/search/?q=' + selectedVille;
+
+        $.ajax({
+            url: apiUrl,
+            method: 'GET',
+            success: function(data) {
+                var latitude = data.features[0].geometry.coordinates[1];
+                var longitude = data.features[0].geometry.coordinates[0];
+                $('#coordinates').text('Latitude : ' + latitude + ', Longitude : ' + longitude);
+                
+                var weatherApiUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&appid=44db16db91ed95ba40b859d2a01c1d96';
+                
+                $.ajax({
+                    url: weatherApiUrl,
+                    method: 'GET',
+                    success: function(weatherData) {
+                        var temperature = (weatherData.main.temp - 273.15).toFixed(1); // Convertir la température en Celsius
+                        var description = weatherData.weather[0].description;
+                        var windSpeed = weatherData.wind.speed;
+
+                        $('#weather').text('Description : ' + description + ' ' + 'Température : ' + temperature + ' ' + 'Vent : ' + windSpeed);
                     },
-                    body: jsonData
-                };
-        
-                // Indiquez l'URL de l'API que vous souhaitez appeler
-                const apiUrl = 'https://example.com/api-endpoint';
-        
-                // Effectuez la requête POST en utilisant fetch()
-                fetch(apiUrl, requestOptions)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data); // Traitez la réponse de l'API ici
-                    })
-                    .catch(error => {
-                        console.error('Erreur lors de la requête POST :', error);
-                    });
-            });
+                    error: function(error) {
+                        console.error('Erreur lors de la requête météo :', error);
+                    }
+                });
+            },
+            error: function(error) {
+                console.error('Erreur lors de la requête :', error);
+            }
         });
-        </script>
-        
+    });
+</script>
+
 </body>
 </html>
