@@ -1,6 +1,6 @@
 # Projet Météo avec Bootstrap et Leaflet
 
-![alt tag](url de ton image)
+![alt tag](https://user-images.githubusercontent.com/63446112/275823025-fa38b454-86aa-415d-b34c-bb8b9c0cbfa3.png)
 
 Ce projet est une application Web simple qui permet aux utilisateurs de rechercher la météo d'une ville donnée. L'application utilise Bootstrap pour la mise en page et Leaflet pour afficher les coordonnées géographiques sur une carte.
 
