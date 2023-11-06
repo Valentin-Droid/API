@@ -25,7 +25,6 @@
 /* Style pour la carte */
 .map-card {
     height: 300px;
-    background-image: url('your-background-image.jpg');
     background-size: cover;
 }
 

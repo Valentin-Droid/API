@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <!-- Métadonnées de la page -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Liste de Sélection avec Bootstrap et Météo</title>
-    <link rel="stylesheet" href="/Users/valentin/Library/CloudStorage/OneDrive-OGECEnsembleScolaireNiortais/API/css/bootstrap.min.css">
+    <title>Météo</title>
+
+    <!-- Liens vers les feuilles de style CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="/Users/valentin/Library/CloudStorage/OneDrive-OGECEnsembleScolaireNiortais/API/css/styles.css">
-</head>
+    <link rel="stylesheet" href="css/styles.css">
 <body>
 <div class="container mt-5">
     <div class="row">
@@ -27,6 +29,7 @@
                 </div>
             </div>
         </div>
+        <!-- Carte de météo, masquée par défaut -->
         <div class="col-md-6 mb-3" id="weatherCard" style="display: none;">
             <div class="card card-height">
                 <div class="card-body">
@@ -40,17 +43,21 @@
         </div>
     </div>
 </div>
+<!-- Surimpression de chargement -->
 <div class="loading-overlay">
     <div class="loading-spinner">
+        <!-- Spinner Bootstrap pour l'indication du chargement -->
         <div class="spinner-border text-primary" role="status">
             <span class="sr-only">Chargement...</span>
         </div>
     </div>
 </div>
+
+<!-- Scripts JavaScript -->
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="/Users/valentin/Library/CloudStorage/OneDrive-OGECEnsembleScolaireNiortais/API/js/bootstrap.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-<script src="/Users/valentin/Library/CloudStorage/OneDrive-OGECEnsembleScolaireNiortais/API/js/config.js"></script>
-<script src="/Users/valentin/Library/CloudStorage/OneDrive-OGECEnsembleScolaireNiortais/API/js/script.js"></script>
+<script src="js/config.js"></script>
+<script src="js/script.js"></script>
 </body>
 </html>
